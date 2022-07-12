@@ -1,0 +1,16 @@
+language: minimal
+node_js:
+  - 13
+  
+services:
+  - docker
+
+script:
+  - docker --version
+  - docker-compose -f deployment/docker/docker-compose-build.yml build
+
+deploy:
+  provider: script
+  script: bash deployment/docker/docker_push.sh
+  on:
+    branch: master
