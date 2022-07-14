@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: users-api
+  name: backend_user
   labels:
-    app: users-api
+    app: backend_user
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: users-api
+      app: backend_user
   template:
     metadata:
       labels:
-        app: users-api
+        app: backend_user
     spec:
       containers:
-      - name: users-api
-        image: yesenarman/udagram-users-api:latest
+      - name: backend_user
+        image: yesenarman/udagram-api-user:latest
         env:
         - name: JWT_SECRET
           valueFrom:

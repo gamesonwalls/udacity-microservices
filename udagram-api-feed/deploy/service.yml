@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: feed-api
-  name: feed-api-svc
+    app: backend_feed
+  name: backend_feed
 spec:
   ports:
   - port: 8081
     protocol: TCP
     targetPort: 8081
   selector:
-    app: feed-api
+    app: backend_feed
