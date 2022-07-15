@@ -9,6 +9,11 @@ spec:
   selector:
     matchLabels:
       app: backend-feed
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -17,52 +22,60 @@ spec:
       containers:
       - name: backend-feed
         image: eturutest/udagram-api-feed:latest
+        imagePullPolicy: Always 
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"    
         env:
         - name: AWS_BUCKET
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: aws_bucket
+            configMapKeyRef:
+              name: env-config
+              key: AWS_BUCKET
         - name: AWS_PROFILE
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: aws_profile
+            configMapKeyRef:
+              name: env-config
+              key: AWS_PROFILE
         - name: AWS_REGION
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: aws_region
+            configMapKeyRef:
+              name: env-config
+              key: AWS_REGION
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: jwt_secret
+              name: env-secret
+              key: JWT_SECRET
         - name: POSTGRES_DB
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: postgres_db
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_DB
         - name: POSTGRES_HOST
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: postgres_host
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_HOST
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: postgres_password
+              name: env-secret
+              key: POSTGRES_PASSWORD
         - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: postgres_username
+              name: env-secret
+              key: POSTGRES_USERNAME
         - name: URL
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: url
+            configMapKeyRef:
+              name: env-config
+              key: URL
         ports:
         - containerPort: 8081
         livenessProbe:

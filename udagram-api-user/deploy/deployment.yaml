@@ -1,58 +1,82 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-user
   labels:
-    app: backend-user
+    service: backend-user
+  name: backend-user
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: backend-user
+      service: backend-user
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: backend-user
+        service: backend-user
     spec:
       containers:
-      - name: backend-user
-        image: eturutest/udagram-api-user:latest
+      - image: eturutest/udagram-api-user:latest
+        name: backend-user 
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"      
         env:
+        env:
+        - name: AWS_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_BUCKET
+        - name: AWS_PROFILE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_PROFILE
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_REGION
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: jwt_secret
+              name: env-secret
+              key: JWT_SECRET
         - name: POSTGRES_DB
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: postgres_db
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_DB
         - name: POSTGRES_HOST
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: postgres_host
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_HOST
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: postgres_password
+              name: env-secret
+              key: POSTGRES_PASSWORD
         - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
-              name: udagram-secrets
-              key: postgres_username
+              name: env-secret
+              key: POSTGRES_USERNAME
         - name: URL
           valueFrom:
-            secretKeyRef:
-              name: udagram-secrets
-              key: url
-        ports:
-        - containerPort: 8082
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8082
-          initialDelaySeconds: 3
-          periodSeconds: 3
+            configMapKeyRef:
+              name: env-config
+              key: URL
+      restartPolicy: Always
+
+

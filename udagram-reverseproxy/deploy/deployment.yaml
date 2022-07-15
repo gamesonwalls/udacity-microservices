@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reverse-proxy
+  name: reverseproxy
   labels:
-    service: reverse-proxy
+    service: reverseproxy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: reverse-proxy
+      service: reverseproxy
   template:
     metadata:
       labels:
-        service: reverse-proxy
+        service: reverseproxy
     spec:
       containers:
-      - name: reverse-proxy
+      - name: reverseproxy
         image: eturutest/udagram-reverseproxy:latest
         ports:
         - containerPort: 80
