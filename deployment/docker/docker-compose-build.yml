@@ -1,15 +1,15 @@
 version: '3'
 
 services:
-  reverse-proxy:
+  reverseproxy:
     image: eturutest/udagram-reverseproxy
     build: ../../udagram-reverseproxy
 
-  feed-api-svc:
+  backend_feed:
     image: eturutest/udagram-api-feed
     build: ../../udagram-api-feed
 
-  users-api-svc:
+ backend_user:
     image: eturutest/udagram-api-user
     build: ../../udagram-api-user
 
